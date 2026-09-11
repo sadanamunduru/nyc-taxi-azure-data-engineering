@@ -59,7 +59,7 @@ Azure Data Factory · Azure Data Lake Storage Gen2 · Azure Databricks (PySpark)
 nyc-taxi-azure-data-engineering/
 ├── README.md
 ├── architecture/
-│   └── architecture_diagram.svg
+│   └── architecture_diagram.png
 ├── notebooks/
 │   ├── 01_bronze_to_silver.py
 │   └── 02_silver_to_gold.py
