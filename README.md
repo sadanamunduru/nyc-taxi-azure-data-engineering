@@ -27,14 +27,14 @@ Azure Data Factory · Azure Data Lake Storage Gen2 · Azure Databricks (PySpark)
 
 ## Pipeline Design
 
-- **Ingestion**: ADF Copy Data pipeline, parameterized with a `month_list` array and a `ForEach` loop, so backfilling or extending to new months requires no code changes — just updating the parameter list
-- **Transformation**: two Databricks PySpark notebooks (`01_bronze_to_silver`, `02_silver_to_gold`), triggered as Databricks Notebook activities chained inside the same ADF pipeline, so the entire flow runs from a single trigger
+- **Ingestion**: ADF Copy Data pipeline, parameterized with a `year_month_list` array and a `ForEach` loop, so backfilling or extending to new months requires no code changes — just updating the parameter list
+- **Transformation**: two Databricks PySpark notebooks (`bronze_silver`, `silver_gold`), triggered as Databricks job activities chained inside the same ADF pipeline, so the entire flow runs from a single trigger
 - **Modeling**: star schema chosen over a normalized model specifically for BI query performance — fewer joins for Power BI to resolve at query time
 - **Serving**: Synapse serverless SQL pool (pay-per-query, zero idle cost) rather than a dedicated pool, appropriate for this project's query volume
 
 ## Key Design Decisions
 
-- **Parameterized ADF pipeline** with a `ForEach` loop instead of one hardcoded Copy Data activity per month — trivially extensible to new months or a full historical backfill
+- **Parameterized ADF pipeline** with a `ForEach` loop instead of one hardcoded Copy Data activity per year-month — trivially extensible to new months or a full historical backfill
 - **Star schema** over 3NF normalization — this is an analytical workload, not transactional, so denormalizing for query speed is the right trade-off
 - **Serverless Synapse SQL** over a dedicated pool — avoids always-on compute cost for a reporting workload that isn't under constant heavy concurrent load
 - **Explicit schema validation** at the Bronze-to-Silver boundary rather than relying on schema inference — TLC has changed its schema before (e.g., adding `congestion_surcharge`, `airport_fee`), so failing loudly on unexpected schema drift beats silently processing bad data
@@ -61,8 +61,8 @@ nyc-taxi-azure-data-engineering/
 ├── architecture/
 │   └── architecture_diagram.png
 ├── notebooks/
-│   ├── 01_bronze_to_silver.py
-│   └── 02_silver_to_gold.py
+│   ├── bronze_silver.py
+│   └── silver_gold.py
 ├── sql/
 │   └── synapse_external_tables.sql
 └── dashboard/
