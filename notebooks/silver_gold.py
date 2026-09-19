@@ -43,7 +43,7 @@ fact_trips = df_clean.select(
 )
 
 # Write Date Dimension to Gold layer
-dim_date.write.mode("overwrite").option("header", "true").csv(f"abfss://gold@{storage}.dfs.core.windows.net/dim_date")
+dim_date.coalesce(1).write.mode("append").option("header", "true").csv(f"abfss://gold@{storage}.dfs.core.windows.net/dim_date")
 
 # Write Fact Trips to Gold layer
-fact_trips.write.mode("overwrite").option("header", "true").csv(f"abfss://gold@{storage}.dfs.core.windows.net/fact_trips")
+fact_trips.coalesce(1).write.mode("append").option("header", "true").csv(f"abfss://gold@{storage}.dfs.core.windows.net/fact_trips")
